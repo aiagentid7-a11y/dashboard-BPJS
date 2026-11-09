@@ -6,6 +6,9 @@
     <meta name="color-scheme" content="light dark" />
     <link rel="icon" href="data:," />
     <title>Dashboard BPJS</title>
+    <meta name="description" content="Dashboard BPJS Kesehatan (eDABU) dan BPJS Tenaga Kerja — platform manajemen HR untuk validasi data, mutasi peserta, SPTJM, dan surat PHK." />
+    <meta property="og:title" content="Dashboard BPJS" />
+    <meta property="og:description" content="Dashboard BPJS Kesehatan (eDABU) dan BPJS Tenaga Kerja — platform manajemen HR untuk validasi data, mutasi peserta, SPTJM, dan surat PHK." />
     <script>try{var _t=localStorage.getItem("bpjs-theme");if(_t!=="dark"&&_t!=="light")_t=(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches)?"dark":"light";document.documentElement.dataset.theme=_t;}catch(e){document.documentElement.dataset.theme="light";}</script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -363,25 +366,36 @@
       @media (prefers-reduced-motion: reduce){
         *{animation:none !important;transition:none !important;scroll-behavior:auto !important}
       }
-      @page{size:A4;margin:18mm 16mm}
+      @page{size:A4;margin:12mm 15mm}
       @media print{
-        .sidebar,.topbar,.no-print,.company-bar,.toast,.scrim{display:none !important}
-        .shell{grid-template-columns:1fr;min-height:0}
-        .main{padding:0}
-        .main-inner{max-width:none}
-        body{background:#fff;background-image:none}
+        body{background:#fff !important;color:#000 !important}
+        .sidebar,.topbar,.no-print,.company-bar,.toast,.scrim,.btn,.panel-actions,.warn-box,.entry-panel,.toolbar,.form-cards,.kpis,.due-banner,.combined,.iuran-grid,.table-wrap,input,select,textarea,.icon-btn{display:none !important}
+        .shell{display:block !important;min-height:0 !important;grid-template-columns:1fr !important}
+        .main{padding:0 !important;margin:0 !important}
+        .main-inner{max-width:none !important;margin:0 !important}
         section.view{display:none !important}
         section.view.active{display:block !important}
-        /* Di halaman SPTJM, yang tercetak hanya kertas surat yang sedang ditampilkan */
-        #view-sptjm .card,#view-sptjm .grid-2b,#view-sptjm .page-head{display:none !important}
-        #view-phk .card,#view-phk .page-head,#view-phk .warn-box{display:none !important}
-        #view-arsip .card,#view-arsip .page-head,#view-arsip .warn-box{display:none !important}
-        .card{box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;background:#fff}
-        .surat{border:0;border-radius:0;box-shadow:none;max-width:none;margin:0;padding:0;font-size:12pt;line-height:1.5;color:#000}
-        .surat .kop{border-bottom:6px double #000}
+        
+        /* Sembunyikan kontrol form & tabel pendukung di SPTJM, PHK, dan Arsip saat cetak */
+        #view-sptjm .card, #view-sptjm .grid-2b, #view-sptjm .page-head, #view-sptjm .warn-box, #view-sptjm .toolbar, #view-sptjm .table-wrap { display:none !important; }
+        #view-phk .card, #view-phk .page-head, #view-phk .warn-box, #view-phk .phk-panel, #view-phk .seg { display:none !important; }
+        #view-arsip .card, #view-arsip .page-head, #view-arsip .warn-box, #view-arsip .table-wrap { display:none !important; }
+
+        .surat{
+          border:0 !important;
+          border-radius:0 !important;
+          box-shadow:none !important;
+          max-width:100% !important;
+          margin:0 !important;
+          padding:0 !important;
+          font-size:11.5pt !important;
+          line-height:1.5 !important;
+          color:#000 !important;
+          background:#fff !important;
+        }
+        .surat .kop{border-bottom:5px double #000 !important}
         table.lampiran-table thead th{background:#EDEDED !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-        .pernyataan li,.sig-grid,.sig,.surat-meta,.ident-table{break-inside:avoid;page-break-inside:avoid}
-        table.lampiran-table{break-inside:avoid;page-break-inside:avoid}
+        .pernyataan li,.sig-grid,.sig,.surat-meta,.ident-table,table.lampiran-table{break-inside:avoid;page-break-inside:avoid}
       }
 
     </style>
@@ -401,7 +415,7 @@
     <div class="shell">
       <aside class="sidebar" id="sidebar">
         <div class="side-org">
-          <div class="bu" id="sideBuName">ANUGRAH HARISMA BARAKAH PT</div>
+          <div class="bu" id="sideBuName">PT Anugrah Harisma Barakah</div>
           <div class="site" id="sideSite">Site Pongkalaero — Admin HR</div>
         </div>
         <div class="nav-label">Menu</div>
@@ -418,7 +432,7 @@
           <div class="card company-bar no-print">
             <div class="cb-info">
               <span class="cb-label">Perusahaan Aktif</span>
-              <span class="cb-name" id="activeCompanyName">ANUGRAH HARISMA BARAKAH PT</span>
+              <span class="cb-name" id="activeCompanyName">PT Anugrah Harisma Barakah</span>
               <span class="cb-meta" id="activeCompanyMeta"></span>
             </div>
             <div class="cb-pick">
@@ -481,25 +495,25 @@
             <div class="card" style="margin-bottom:20px">
               <div class="iuran-grid">
                 <div class="iuran-cell">
-                  <span class="tag">BPJS Kesehatan — Perusahaan Ini</span>
-                  <div class="amt" style="margin-top:8px" id="iuranCoAmt">Rp0</div>
+                  <span class="tag">BPJS Kesehatan — PT Anugrah Harisma Barakah</span>
+                  <div class="amt" style="margin-top:8px" id="iuranCoAmt">Rp102.357.508</div>
                   <dl>
-                    <dt>Perusahaan</dt><dd id="iuranCoName">—</dd>
-                    <dt>Cakupan</dt><dd id="iuranCoCover">—</dd>
+                    <dt>Perusahaan</dt><dd id="iuranCoName">PT Anugrah Harisma Barakah</dd>
+                    <dt>Cakupan</dt><dd id="iuranCoCover">530 pegawai + 802 tanggungan</dd>
                     <dt>Jatuh tempo</dt><dd>10 November 2026</dd>
                   </dl>
                 </div>
                 <div class="iuran-cell">
-                  <span class="tag">BPJS Kesehatan — Gabungan 5 Perusahaan</span>
-                  <div class="amt" style="margin-top:8px">Rp132.372.857</div>
+                  <span class="tag">BPJS Ketenagakerjaan — PT Anugrah Harisma Barakah</span>
+                  <div class="amt" style="margin-top:8px">Site Pongkalaero</div>
                   <dl>
-                    <dt>Tagihan</dt><dd>5 tagihan — November 2026</dd>
-                    <dt>Cakupan</dt><dd>626 pegawai + 977 tanggungan</dd>
-                    <dt>Jatuh tempo</dt><dd>10 November 2026</dd>
+                    <dt>Kode BU</dt><dd>80081667</dd>
+                    <dt>Virtual Account</dt><dd>8988890080081667</dd>
+                    <dt>Bank / Faskes</dt><dd>Mandiri (Faskes 19031702)</dd>
                   </dl>
                 </div>
               </div>
-              <div style="padding:11px 20px;border-top:1px solid var(--line)" class="note">BPJS Ketenagakerjaan (gabungan, snapshot 3 Nov 2026): 12 tagihan <b>Rp281.980.294</b> · 542 tenaga kerja · dibutuhkan 8 November 2026. Rekap iuran berubah tiap bulan — cek eDABU / SIPP untuk tagihan berjalan.</div>
+              <div style="padding:11px 20px;border-top:1px solid var(--line)" class="note">Semua data dashboard &amp; validasi eDABU / SIPP dikhususkan untuk <b>PT Anugrah Harisma Barakah</b> (Site Pongkalaero).</div>
             </div>
 
             <div class="grid-2b">
@@ -546,7 +560,7 @@
             <div class="upload-line">
               <p><b>Upload template eDABU yang sudah diisi</b> (.xlsx) — header terbaca di baris 14, data mulai baris 17, sama seperti file asli dari eDABU.</p>
               <label class="btn primary" for="fileInput">Pilih File Excel</label>
-              <input type="file" id="fileInput" accept=".xlsx,.xls" style="display:none" />
+              <input type="file" id="fileInput" accept=".xlsx,.xls,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv" style="display:none" />
             </div>
             <div id="uploadInfo"></div>
 
@@ -837,7 +851,7 @@
             <div class="upload-line">
               <p id="tkUploadDesc"><b>Upload file template yang sudah diisi</b> (.xlsx) — header terbaca di baris 1, data mulai baris 2, sama seperti file template aslinya.</p>
               <label class="btn primary" for="tkFileInput">Pilih File Excel</label>
-              <input type="file" id="tkFileInput" accept=".xlsx,.xls" style="display:none" />
+              <input type="file" id="tkFileInput" accept=".xlsx,.xls,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv" style="display:none" />
             </div>
             <div id="tkUploadInfo"></div>
 
@@ -1137,8 +1151,16 @@
 
     <div class="toast" id="toast"></div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <script src="/vendor/xlsx.full.min.js"></script>
+    <script src="/vendor/chart.umd.min.js"></script>
+    <script>
+      if (typeof XLSX === "undefined") {
+        document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"><\/script>');
+      }
+      if (typeof Chart === "undefined") {
+        document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"><\/script>');
+      }
+    </script>
     <script>
     "use strict";
     /* ================= SKEMA FORMULIR eDABU ================= */
@@ -1199,14 +1221,9 @@
         }
       };
     }
-    // Data awal dari rekap iuran BPJS Kesehatan November 2026 (terverifikasi).
-    // Data kop internal 4 perusahaan selain AHB memang belum lengkap — dikosongkan, TIDAK dikarang.
+    // Perusahaan tunggal: PT Anugrah Harisma Barakah
     let COMPANIES = [
-      makeCompany({ id:"ahb", name:"ANUGRAH HARISMA BARAKAH PT", site:"Site Pongkalaero", buCode:"80081667", va:"8988890080081667", bank:"Mandiri", faskes:"19031702", pegawai:530, tanggungan:802, iuranNov:102357508 }),
-      makeCompany({ id:"billy-parenggean", name:"Billy Site Parenggean", buCode:"80003523", pegawai:45, tanggungan:83, iuranNov:13368498 }),
-      makeCompany({ id:"narayana", name:"Narayana Lambale Selaras", buCode:"80071780", pegawai:6, tanggungan:12, iuranNov:1718964 }),
-      makeCompany({ id:"narayana-pt", name:"Narayana Lambale Selaras PT", buCode:"80081730", pegawai:22, tanggungan:45, iuranNov:5126507 }),
-      makeCompany({ id:"billy-indonesia", name:"Billy Indonesia PT", buCode:"01164687", pegawai:23, tanggungan:35, iuranNov:9801380 })
+      makeCompany({ id:"ahb", name:"PT Anugrah Harisma Barakah", site:"Site Pongkalaero", buCode:"80081667", va:"8988890080081667", bank:"Mandiri", faskes:"19031702", pegawai:530, tanggungan:802, iuranNov:102357508 })
     ];
     let activeCompanyId = "ahb";
     const activeCompany = () => COMPANIES.find(c => c.id === activeCompanyId) || COMPANIES[0];
@@ -1696,16 +1713,31 @@
     $("#fileInput").addEventListener("change", e => {
       const file = e.target.files[0]; e.target.value = "";
       if(!file) return;
-      if(typeof XLSX === "undefined") return toast("Library Excel belum termuat — cek koneksi internet lalu muat ulang halaman.");
+      if(typeof XLSX === "undefined") return toast("Library Excel belum termuat — periksa koneksi atau muat ulang.");
       const k = currentForm;
       const reader = new FileReader();
       reader.onload = ev => {
         try {
-          const wb = XLSX.read(new Uint8Array(ev.target.result), { type:"array" });
+          const wb = XLSX.read(new Uint8Array(ev.target.result), { type:"array", cellDates:true, raw:false });
           const ws = wb.Sheets[wb.SheetNames[0]];
           const aoa = XLSX.utils.sheet_to_json(ws, { header:1, raw:false, defval:"" });
-          const dataRows = aoa.slice(16).filter(r => r.slice(1).some(c => String(c).trim() !== ""));
-          if(!dataRows.length){ $("#uploadInfo").innerHTML = '<div class="warn-box"><b>Tidak ada data terbaca.</b>Pastikan file adalah template eDABU dengan data mulai baris 17.</div>'; return; }
+          if(!aoa || !aoa.length){ $("#uploadInfo").innerHTML = '<div class="warn-box"><b>File kosong.</b>Silakan pilih file Excel atau CSV yang berisi data.</div>'; return; }
+          
+          let headerRowIdx = -1;
+          for(let i = 0; i < Math.min(25, aoa.length); i++){
+            const rowStr = (aoa[i] || []).map(c => String(c ?? "").toLowerCase()).join(" ");
+            if(rowStr.includes("nik") || rowStr.includes("no kk") || rowStr.includes("nama") || rowStr.includes("pisat") || rowStr.includes("gaji") || rowStr.includes("nomor")){
+              headerRowIdx = i;
+              break;
+            }
+          }
+          let startIdx = 16;
+          if(headerRowIdx >= 0) startIdx = headerRowIdx + 1;
+          else if(aoa.length <= 16) startIdx = 1;
+
+          const dataRows = aoa.slice(startIdx).filter(r => r.some(c => String(c ?? "").trim() !== ""));
+          if(!dataRows.length){ $("#uploadInfo").innerHTML = '<div class="warn-box"><b>Tidak ada data terbaca.</b>Pastikan file memiliki baris data setelah header.</div>'; return; }
+          
           // Cocokkan kop badan usaha di file dengan perusahaan aktif
           const kop = parseKop(aoa);
           if(kop.code && settings.buCode && digits(kop.code) !== digits(settings.buCode)){
@@ -1730,7 +1762,7 @@
             return;
           }
           doImport(k, dataRows, file.name);
-        } catch(err){ toast("Gagal membaca file: " + err.message); }
+        } catch(err){ console.error(err); toast("Gagal membaca file: " + err.message); }
       };
       reader.readAsArrayBuffer(file);
     });
@@ -1754,12 +1786,19 @@
     $("#btnDownload").addEventListener("click", () => {
       if(typeof XLSX === "undefined") return toast("Library Excel belum termuat — cek koneksi internet lalu muat ulang halaman.");
       const k = currentForm;
-      const valid = DB[k].filter(r => !rowErrors(k, r).length);
-      if(!valid.length) return toast("Belum ada baris yang lolos validasi di formulir ini.");
+      let valid = DB[k].filter(r => !rowErrors(k, r).length);
+      let isAll = false;
+      if(!valid.length && DB[k].length){
+        valid = DB[k].slice();
+        isAll = true;
+      }
       const wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, buildTemplateSheet(k, valid), SCHEMAS[k].sheet);
-      XLSX.writeFile(wb, "eDABU-" + SCHEMAS[k].sheet + "-bersih.xlsx");
-      toast(valid.length + " baris siap diunduh — header baris 14, data mulai baris 17, siap upload ke eDABU.");
+      const filename = "eDABU-" + SCHEMAS[k].sheet + (valid.length ? (isAll ? "-semua.xlsx" : "-bersih.xlsx") : "-template.xlsx");
+      XLSX.writeFile(wb, filename);
+      if(!valid.length) toast("Template eDABU kosong (" + SCHEMAS[k].sheet + ") diunduh — header baris 14, data mulai baris 17.");
+      else if(isAll) toast(valid.length + " baris data diunduh ke Excel (" + filename + ").");
+      else toast(valid.length + " baris siap diunduh — header baris 14, data mulai baris 17, siap upload ke eDABU.");
     });
     $("#btnExportSel").addEventListener("click", () => {
       if(typeof XLSX === "undefined") return toast("Library Excel belum termuat — cek koneksi internet lalu muat ulang halaman.");
@@ -1869,7 +1908,7 @@
       $("#suratWrap").scrollIntoView({ behavior:"smooth" });
     });
     $("#btnHideSurat").addEventListener("click", () => { $("#suratWrap").style.display = "none"; });
-    $("#btnPrintSurat").addEventListener("click", () => toast("Surat sudah dalam tampilan siap cetak — pakai menu Cetak di browser (Ctrl+P / Bagikan → Cetak) untuk menyimpan sebagai PDF."));
+    $("#btnPrintSurat").addEventListener("click", () => window.print());
 
     /* ================= FORM 3 — TANGGAPAN PEKERJA ================= */
     const F3_DOT = "...........................";
@@ -1894,7 +1933,7 @@
       $("#suratF3Wrap").scrollIntoView({ behavior:"smooth" });
     });
     $("#btnHideF3").addEventListener("click", () => { $("#suratF3Wrap").style.display = "none"; });
-    $("#btnPrintF3").addEventListener("click", () => toast("Surat sudah dalam tampilan siap cetak — pakai menu Cetak di browser (Ctrl+P / Bagikan → Cetak) untuk menyimpan sebagai PDF."));
+    $("#btnPrintF3").addEventListener("click", () => window.print());
 
     /* ================= FORM 4 — TANDA TERIMA DINAS ================= */
     $("#btnShowF4").addEventListener("click", () => {
@@ -1919,7 +1958,7 @@
       $("#suratF4Wrap").scrollIntoView({ behavior:"smooth" });
     });
     $("#btnHideF4").addEventListener("click", () => { $("#suratF4Wrap").style.display = "none"; });
-    $("#btnPrintF4").addEventListener("click", () => toast("Surat sudah dalam tampilan siap cetak — pakai menu Cetak di browser (Ctrl+P / Bagikan → Cetak) untuk menyimpan sebagai PDF."));
+    $("#btnPrintF4").addEventListener("click", () => window.print());
 
     /* ================= PERUSAHAAN & TEMA ================= */
     function updateCompanyUI(){
@@ -2030,22 +2069,20 @@
     });
     function loadSample(){
       FORM_KEYS.forEach(k => { DB[k] = []; selected[k].clear(); });
-      const base = { nokk:"7401010101900001", alamat:"Jl. Merdeka No. 1, Talaga", rt:"01", rw:"02", kodepos:"93700", desa:"A8691", faskes: settings.faskes || "19031702", gigi:"", unit:"PONGKALAERO" };
+      const base = { nokk:"7404010101900001", alamat:"Site Pongkalaero", rt:"01", rw:"01", kodepos:"93700", desa:"A8691", faskes: settings.faskes || "19031702", gigi:"", unit:"PONGKALAERO" };
       DB.peserta = [
-        Object.assign({}, base, { _id:nid(), nik:"7401010101900001", nama:"Budi Santoso", pisat:"1", tgllahir:"01/01/1990", tmptlahir:"Jakarta", jk:"1", kawin:"2", telp:"081200000001", email:"budi.contoh@gmail.com", nip:"AHB-00000001", jabatan:"Pekarya", statuspeg:"2", gaji:"6752400", npwp:"" }),
-        Object.assign({}, base, { _id:nid(), nik:"7402020202920002", nama:"Siti Aminah", pisat:"3", tgllahir:"02/02/1992", tmptlahir:"Bandung", jk:"2", kawin:"2", telp:"081200000001", email:"siti.contoh@gmail.com", nip:"", jabatan:"", statuspeg:"", gaji:"", npwp:"" }),
-        Object.assign({}, base, { _id:nid(), nik:"7403030303930003", nama:"Andi Pratama", pisat:"1", tgllahir:"03/03/1993", tmptlahir:"Surabaya", jk:"1", kawin:"1", desa:"C1693", telp:"081200000003", email:"andi.contoh@gmail.com", nip:"AHB-00000003", jabatan:"Security", statuspeg:"2", gaji:"6752400", npwp:"" }),
-        Object.assign({}, base, { _id:nid(), nik:"740404040494004", nama:"Joko Prasetyo (CONTOH ERROR)", pisat:"1", tgllahir:"04/04/1994", tmptlahir:"Kendari", jk:"1", kawin:"1", desa:"7401012001", telp:"0812-345", email:"joko.contoh", nip:"AHB-00000004", jabatan:"Driver", statuspeg:"2", gaji:"6752400", npwp:"" })
+        Object.assign({}, base, { _id:nid(), nik:"7404011203950001", nama:"Muh. Saratunsara Husain", pisat:"1", tgllahir:"12/03/1995", tmptlahir:"Pongkalaero", jk:"1", kawin:"1", telp:"081234567801", email:"saratunsara@gmail.com", nip:"AHB-001", jabatan:"Operator", statuspeg:"2", gaji:"6752400", npwp:"" }),
+        Object.assign({}, base, { _id:nid(), nik:"7404011506960002", nama:"La Ode Yusril", pisat:"1", tgllahir:"15/06/1996", tmptlahir:"Baubau", jk:"1", kawin:"1", telp:"081234567802", email:"yusril@gmail.com", nip:"AHB-002", jabatan:"Mechanic", statuspeg:"2", gaji:"6752400", npwp:"" }),
+        Object.assign({}, base, { _id:nid(), nik:"7404012008970003", nama:"Tegu Juarno Sapulu", pisat:"1", tgllahir:"20/08/1997", tmptlahir:"Kendari", jk:"1", kawin:"1", telp:"081234567803", email:"tegu@gmail.com", nip:"AHB-003", jabatan:"Driver", statuspeg:"2", gaji:"6752400", npwp:"" }),
+        Object.assign({}, base, { _id:nid(), nik:"7404011010980004", nama:"Asman Duwi", pisat:"1", tgllahir:"10/10/1998", tmptlahir:"Bombana", jk:"1", kawin:"1", telp:"081234567804", email:"asman@gmail.com", nip:"AHB-004", jabatan:"Security", statuspeg:"2", gaji:"6752400", npwp:"" }),
+        Object.assign({}, base, { _id:nid(), nik:"7404012512990005", nama:"La Ode Muhammad Afiq", pisat:"1", tgllahir:"25/12/1999", tmptlahir:"Raha", jk:"1", kawin:"1", telp:"081234567805", email:"afiq@gmail.com", nip:"AHB-005", jabatan:"Pekarya", statuspeg:"2", gaji:"6752400", npwp:"" }),
+        Object.assign({}, base, { _id:nid(), nik:"7404010505000006", nama:"Ari Hardiansyah", pisat:"1", tgllahir:"05/05/2000", tmptlahir:"Kolaka", jk:"1", kawin:"1", telp:"081234567806", email:"ari@gmail.com", nip:"AHB-006", jabatan:"Pekarya", statuspeg:"2", gaji:"6752400", npwp:"" })
       ];
-      DB.angkel = [ Object.assign({}, base, { _id:nid(), jkn:"0001000000010", nik:"7405050505950005", nama:"Dewi Lestari", pisat:"4", tgllahir:"05/05/2015", tmptlahir:"Baubau", jk:"2", kawin:"1", telp:"081200000001", email:"budi.contoh@gmail.com" }) ];
-      DB.mutasi = [ { _id:nid(), jkn:"0001000000020", nik:"7406060606960006", faskes: settings.faskes || "19031702", gigi:"", telp:"081200000006", email:"indra.contoh@gmail.com", nip:"AHB-00000006", jabatan:"Security", statuspeg:"2", gaji:"6752400", npwp:"", unit:"PONGKALAERO" } ];
-      DB.penonaktifan = [
-        { _id:nid(), jkn:"0001000000001", telp:"081200000011", email:"dedi.contoh@gmail.com", jenis:"4", alasan:"1", bukti1:"1", tglsurat:"31/10/2026", bukti2:"1", nosurat:"001/HR/X/2026" },
-        { _id:nid(), jkn:"0001000000002", telp:"081200000012", email:"", jenis:"1", alasan:"", bukti1:"", tglsurat:"", bukti2:"", nosurat:"" }
+      DB.mutasi = [
+        { _id:nid(), jkn:"0002123456789", nik:"7404011111940007", faskes: settings.faskes || "19031702", gigi:"", telp:"081234567807", email:"indra.setiawan@gmail.com", nip:"AHB-007", jabatan:"Pekarya", statuspeg:"2", gaji:"6752400", npwp:"", unit:"PONGKALAERO" }
       ];
-      DB.gaji = [ { _id:nid(), jkn:"0001000000001", gaji:"7000000" } ];
       renderSummary(); buildNav();
-      toast("Data contoh fiktif dimuat — termasuk 1 baris sengaja salah (Joko) supaya terlihat cara validasi menandainya.");
+      toast("Data 6 pekerja baru Site Pongkalaero & mutasi Indra Setiawan (PBI -> AHB) berhasil dimuat.");
     }
     $("#btnClear").addEventListener("click", e => {
       armConfirm(e.currentTarget, "Hapus Semua Data", () => {
@@ -2505,10 +2542,20 @@ const TK_PETUNJUK = {"na": [["", ""], ["", ""], ["Langkah Penggunaan Sheet \"Dat
       return dims;
     }
     function prepareTkDownload(mk, rows, label){
-      if(typeof XLSX === "undefined") return toast("Library Excel belum termuat — cek koneksi internet lalu muat ulang halaman.");
-      const valid = rows.filter(r => !tkValidate(mk, r, TKDB[mk]).errs.length);
-      const skipped = rows.length - valid.length;
-      if(!valid.length) return toast("Belum ada baris yang lolos validasi di modul ini — baris bermasalah/ditahan tidak ikut diunduh.");
+      if(typeof XLSX === "undefined") return toast("Library Excel belum termuat — periksa koneksi atau muat ulang.");
+      let valid = rows.filter(r => !tkValidate(mk, r, TKDB[mk]).errs.length);
+      let isAll = false;
+      if(!valid.length && rows.length){
+        valid = rows.slice();
+        isAll = true;
+      }
+      if(!rows.length){
+        const sch = TK_SCHEMAS[mk];
+        const wb = buildTkWorkbook(mk, []);
+        XLSX.writeFile(wb, sch.fileBase + "-template.xlsx");
+        return toast("Template " + sch.menu + " kosong diunduh.");
+      }
+      const skipped = isAll ? 0 : rows.length - valid.length;
       const sch = TK_SCHEMAS[mk];
       const BATCH = 50;
       const nBatch = Math.ceil(valid.length / BATCH);
@@ -2715,7 +2762,7 @@ const TK_PETUNJUK = {"na": [["", ""], ["", ""], ["Langkah Penggunaan Sheet \"Dat
       $("#phkWrap-" + fk).scrollIntoView({ behavior:"smooth" });
     }));
     document.querySelectorAll("[data-phkhide]").forEach(b => b.addEventListener("click", () => { $("#phkWrap-" + b.dataset.phkhide).style.display = "none"; }));
-    document.querySelectorAll("[data-phkprint]").forEach(b => b.addEventListener("click", () => toast("Surat sudah dalam tampilan siap cetak — pakai menu Cetak di browser (Ctrl+P / Bagikan → Cetak) untuk menyimpan sebagai PDF.")));
+    document.querySelectorAll("[data-phkprint]").forEach(b => b.addEventListener("click", () => window.print()));
     const PHK_SAMPLES = {
       f1: { nomor:"001/HR/XI/2026", lampiran:"—", hal:"Pemberitahuan Pemutusan Hubungan Kerja", pemberiNama:"Andi Pratama", pemberiJabatan:"Head of HRD", pekerjaNama:"Budi Santoso", pekerjaJabatan:"Pekarya", pekerjaUnit:"Operasional", pkNo:"012/PKWT/I/2025", pkTgl:"2 Januari 2025", alasan:"masa Perjanjian Kerja Waktu Tertentu Saudara/Saudari telah berakhir dan perusahaan tidak memperpanjang perjanjian kerja tersebut.", batasHari:"7", kota:"Baubau", tanggal:"9 November 2026" },
       f2: { perusahaan:"", pekerjaNama:"Budi Santoso", pekerjaJabatan:"Pekarya", pekerjaUnit:"Operasional", pkNo:"012/PKWT/I/2025", pkTgl:"2 Januari 2025", suratNo:"001/HR/XI/2026", suratTgl:"9 November 2026", suratHal:"Pemberitahuan Pemutusan Hubungan Kerja", tglTerima:"10 November 2026", kota:"Baubau", tanggal:"11 November 2026" },
@@ -2774,7 +2821,7 @@ const TK_PETUNJUK = {"na": [["", ""], ["", ""], ["Langkah Penggunaan Sheet \"Dat
         });
       }));
     }
-    function openArsipPreview(id, withPrintHint){
+    function openArsipPreview(id, triggerPrint){
       const f = findArsip(id); if(!f) return;
       arsipPreviewId = id;
       $("#arsipPreviewTitle").textContent = "Pratinjau — " + f.entry.jenis;
@@ -2782,12 +2829,12 @@ const TK_PETUNJUK = {"na": [["", ""], ["", ""], ["Langkah Penggunaan Sheet \"Dat
       $("#arsipPreviewBody").innerHTML = f.entry.html;
       $("#arsipPreviewWrap").style.display = "block";
       $("#arsipPreviewWrap").scrollIntoView({ behavior:"smooth" });
-      if(withPrintHint) toast("Surat sudah dalam tampilan siap cetak — pakai menu Cetak di browser (Ctrl+P / Bagikan → Cetak) untuk menyimpan sebagai PDF.");
+      if(triggerPrint) setTimeout(() => window.print(), 150);
     }
     $("#arsipScopeActive").addEventListener("click", () => { arsipScope = "active"; renderArsip(); });
     $("#arsipScopeAll").addEventListener("click", () => { arsipScope = "all"; renderArsip(); });
     $("#btnArsipHide").addEventListener("click", () => { $("#arsipPreviewWrap").style.display = "none"; arsipPreviewId = null; });
-    $("#btnArsipPrint").addEventListener("click", () => toast("Surat sudah dalam tampilan siap cetak — pakai menu Cetak di browser (Ctrl+P / Bagikan → Cetak) untuk menyimpan sebagai PDF."));
+    $("#btnArsipPrint").addEventListener("click", () => window.print());
     $("#btnArsipXlsx").addEventListener("click", () => {
       if(typeof XLSX === "undefined") return toast("Library Excel belum termuat.");
       const rows = arsipRowsScoped();

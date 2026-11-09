@@ -1,0 +1,6 @@
+{
+  "name": "Dashboard BPJS",
+  "description": "Dashboard BPJS Kesehatan (eDABU) dan BPJS Tenaga Kerja — platform manajemen HR untuk validasi data, mutasi peserta, SPTJM, dan surat PHK.",
+  "requestFramePermissions": [],
+  "prompt": "Dashboard BPJS Kesehatan dan BPJS Tenaga Kerja"
+}

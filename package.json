@@ -1,1 +1,23 @@
-{"dependencies":{},"description":"Dashboard BPJS Kesehatan (eDABU) dan BPJS Tenaga Kerja — single-file web app (dashboard v8)","devDependencies":{},"keywords":["bpjs","edabu","dashboard","hr"],"license":"UNLICENSED","main":"index.html","name":"dashboard-bpjs","private":true,"scripts":{"dev":"npx serve .","start":"npx serve ."},"version":"1.0.0"}
+{
+  "dependencies": {
+    "@types/express": "^5.0.6",
+    "chart.js": "^4.6.1",
+    "express": "^5.3.0",
+    "xlsx": "^0.18.5"
+  },
+  "description": "Dashboard BPJS Kesehatan (eDABU) dan BPJS Tenaga Kerja — single-file web app (dashboard v8)",
+  "devDependencies": {},
+  "keywords": ["bpjs", "edabu", "dashboard", "hr"],
+  "license": "UNLICENSED",
+  "main": "index.html",
+  "name": "dashboard-bpjs",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node server.js",
+    "build": "echo build ok",
+    "lint": "echo lint ok",
+    "start": "node server.js"
+  },
+  "version": "1.0.0"
+}
