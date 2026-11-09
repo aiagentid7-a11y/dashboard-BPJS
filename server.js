@@ -17,5 +17,5 @@ app.get('/vendor/chart.umd.min.js', (_req, res) =>
 // Hanya index.html yang disajikan — package.json, server.js, dll. tidak ikut terbuka
 app.get(['/', '/index.html'], (_req, res) => res.sendFile(path.join(__dirname, 'index.html')));
 
-const host = process.env.HOST || '127.0.0.1';
+const host = process.env.HOST || '0.0.0.0';
 app.listen(PORT, host, () => console.log(`Server running at http://${host}:${PORT}`));

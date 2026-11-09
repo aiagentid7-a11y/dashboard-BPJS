@@ -10,7 +10,9 @@
   "engines": { "node": ">=18" },
   "scripts": {
     "dev": "node server.js",
-    "start": "node server.js"
+    "start": "node server.js",
+    "build": "node -c server.js",
+    "lint": "node -c server.js"
   },
   "dependencies": {
     "chart.js": "4.4.1",
