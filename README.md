@@ -4,7 +4,7 @@ Dashboard web untuk mengolah formulir BPJS Kesehatan (eDABU) dan BPJS Tenaga Ker
 
 **Buka live:** https://aiagentid7-a11y.github.io/dashboard-BPJS/
 
-Versi: v9 (9 November 2026)
+Versi: v9 (9 November 2026) — semua data iuran dihapus dari dashboard (tidak ada lagi angka/tagihan iuran, kartu snapshot iuran, estimasi iuran, maupun kalkulator iuran).
 
 ## Fitur
 
@@ -14,7 +14,7 @@ Versi: v9 (9 November 2026)
 - **BPJS Tenaga Kerja:** NA Massal (SEBAB A1–A10), Koreksi Data TK, Koreksi PKWT, TK Baru
 - **Surat PHK Format 1–4** + menu Surat & Arsip
 - **Multi-perusahaan** (tambah lewat Pengaturan atau impor file berkop) + mode gelap/terang
-- **Ringkasan:** KPI, grafik, hitung mundur jatuh tempo, rekap iuran
+- **Ringkasan:** KPI, grafik
 
 ## Cara pakai
 

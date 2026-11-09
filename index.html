@@ -160,25 +160,12 @@
       .grid-2b{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
       .chart-box{position:relative;height:230px}
       .legend-note{color:var(--muted);font-size:12.5px;margin-top:8px}
-      .due-banner{display:flex;flex-wrap:wrap;gap:10px;align-items:center;background:var(--amber-bg);border:1px solid var(--line);border-radius:var(--radius);padding:13px 18px;margin-bottom:20px}
-      .due-banner svg{width:22px;height:22px;flex:none}
-      .due-banner b{font-size:15.5px}
-      .due-banner .days{margin-left:auto;font-weight:800;font-size:20px}
-      .due-banner>span:not(.days){flex:1 1 200px;min-width:0}
       .combined{display:flex;flex-wrap:wrap;gap:8px 28px;align-items:center;padding:15px 20px;margin-bottom:20px;border-left:5px solid var(--blue)}
       .combined .c-title{font-weight:800;font-size:15px;width:100%}
       .combined .c-item{font-size:13.5px;color:var(--muted)}
       .combined .c-item b{display:block;font-size:19px;color:var(--ink);letter-spacing:-.01em}
       .combined .c-item b.bad{color:var(--red)}
 
-      /* ---------- Iuran snapshot ---------- */
-      .iuran-grid{display:grid;grid-template-columns:1fr 1fr;gap:0}
-      .iuran-cell{padding:16px 20px}
-      .iuran-cell + .iuran-cell{border-left:1px solid var(--line)}
-      .iuran-cell .amt{font-size:23px;font-weight:800;letter-spacing:-.01em}
-      .iuran-cell dl{display:grid;grid-template-columns:auto 1fr;gap:2px 14px;margin:10px 0 0;font-size:13.5px}
-      .iuran-cell dt{color:var(--muted)}
-      .iuran-cell dd{margin:0;font-weight:600;text-align:right}
       .tag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.06em;padding:2px 8px;border-radius:5px;background:var(--blue-soft);color:var(--blue-dark);text-transform:uppercase}
 
       /* ---------- Tables ---------- */
@@ -342,8 +329,6 @@
         .scrim.show{display:block}
         .main{padding:18px 14px 50px}
         .grid-2b{grid-template-columns:1fr}
-        .iuran-grid{grid-template-columns:1fr}
-        .iuran-cell + .iuran-cell{border-left:0;border-top:1px solid var(--line)}
         .surat{padding:30px 20px 34px;font-size:11.5pt}
         .surat .sig .box{min-width:0;width:58%}
         .ident-table .lbl{width:138px}
@@ -369,7 +354,7 @@
       @page{size:A4;margin:12mm 15mm}
       @media print{
         body{background:#fff !important;color:#000 !important}
-        .sidebar,.topbar,.no-print,.company-bar,.toast,.scrim,.btn,.panel-actions,.warn-box,.entry-panel,.toolbar,.form-cards,.kpis,.due-banner,.combined,.iuran-grid,.table-wrap,input,select,textarea,.icon-btn{display:none !important}
+        .sidebar,.topbar,.no-print,.company-bar,.toast,.scrim,.btn,.panel-actions,.warn-box,.entry-panel,.toolbar,.form-cards,.kpis,.combined,.table-wrap,input,select,textarea,.icon-btn{display:none !important}
         .shell{display:block !important;min-height:0 !important;grid-template-columns:1fr !important}
         .main{padding:0 !important;margin:0 !important}
         .main-inner{max-width:none !important;margin:0 !important}
@@ -454,15 +439,12 @@
               <button class="btn danger" id="btnClear">Hapus Semua Data</button>
             </div>
 
-            <div class="due-banner" id="dueBanner"></div>
-
             <div class="kpis">
               <div class="card kpi"><div class="lbl">Total Baris (7 Formulir)</div><div class="num" id="kpiTotal">0</div><div class="sub" id="kpiTotalSub">belum ada data</div><div class="bar"><i id="kpiTotalFill"></i></div><div class="bar-lbl" id="kpiTotalLbl">0 dari 7 formulir terisi</div></div>
               <div class="card kpi"><div class="lbl">Peserta Baru</div><div class="num" id="kpiPeserta">0</div><div class="sub">formulir PESERTA</div><div class="bar"><i id="kpiPesertaFill"></i></div><div class="bar-lbl" id="kpiPesertaLbl">0% dari total baris</div></div>
               <div class="card kpi"><div class="lbl">Penonaktifan</div><div class="num" id="kpiNonaktif">0</div><div class="sub" id="kpiNonaktifSub">formulir PENONAKTIFAN</div><div class="bar"><i id="kpiNonaktifFill"></i></div><div class="bar-lbl" id="kpiNonaktifLbl">0% dari total baris</div></div>
               <div class="card kpi warn"><div class="lbl">Bermasalah</div><div class="num" id="kpiBad">0</div><div class="sub">gagal validasi — perbaiki dulu</div><div class="bar bad"><i id="kpiBadFill"></i></div><div class="bar-lbl" id="kpiBadLbl">Semua baris valid</div></div>
               <div class="card kpi ok" style="grid-column:span 2"><div class="lbl">Siap Upload ke eDABU</div><div class="num" id="kpiOk">0</div><div class="sub">baris lolos semua aturan validasi</div><div class="bar ok"><i id="kpiOkFill"></i></div><div class="bar-lbl" id="kpiOkLbl">0% dari total baris siap upload</div></div>
-              <div class="card kpi" style="grid-column:span 2"><div class="lbl">Estimasi Iuran Kesehatan / Bulan</div><div class="num" id="kpiIuran" style="font-size:24px;padding-top:5px">Rp0</div><div class="sub">5% dari total gaji di formulir PESERTA + GAJI (4% perusahaan + 1% pekerja)</div><div class="bar"><i id="kpiIuranFill"></i></div><div class="bar-lbl" id="kpiIuranLbl">Dibandingkan tagihan perusahaan ini, Nov 2026</div></div>
             </div>
 
             <div class="card combined" id="combinedCard"></div>
@@ -492,40 +474,7 @@
               </div>
             </div>
 
-            <div class="card" style="margin-bottom:20px">
-              <div class="iuran-grid">
-                <div class="iuran-cell">
-                  <span class="tag">BPJS Kesehatan — PT Anugrah Harisma Barakah</span>
-                  <div class="amt" style="margin-top:8px" id="iuranCoAmt">Rp0</div>
-                  <dl>
-                    <dt>Perusahaan</dt><dd id="iuranCoName">PT Anugrah Harisma Barakah</dd>
-                    <dt>Cakupan</dt><dd id="iuranCoCover">0 pegawai + 0 tanggungan</dd>
-                    <dt>Jatuh tempo</dt><dd>10 November 2026</dd>
-                  </dl>
-                </div>
-                <div class="iuran-cell">
-                  <span class="tag">BPJS Ketenagakerjaan — PT Anugrah Harisma Barakah</span>
-                  <div class="amt" style="margin-top:8px">Site Pongkalaero</div>
-                  <dl>
-                    <dt>Kode BU</dt><dd id="iuranBuCode">—</dd>
-                    <dt>Virtual Account</dt><dd id="iuranVa">—</dd>
-                    <dt>Bank / Faskes</dt><dd id="iuranBank">—</dd>
-                  </dl>
-                </div>
-              </div>
-              <div style="padding:11px 20px;border-top:1px solid var(--line)" class="note">Semua data dashboard &amp; validasi eDABU / SIPP dikhususkan untuk <b>PT Anugrah Harisma Barakah</b> (Site Pongkalaero).</div>
-            </div>
-
             <div class="grid-2b">
-              <div class="card card-pad">
-                <h2 style="margin-bottom:10px">Hitung Iuran Kesehatan per Pekerja</h2>
-                <div class="field" style="max-width:320px">
-                  <label for="calcGaji">Gaji Pokok + Tunjangan Tetap (Rp)</label>
-                  <input type="number" id="calcGaji" value="6752400" min="0" step="1000" />
-                </div>
-                <div id="calcOut" style="margin-top:12px"></div>
-                <p class="note" style="margin-top:10px">Tarif 5%: 4% ditanggung perusahaan, 1% pekerja — dari gaji pokok + tunjangan tetap.</p>
-              </div>
               <div class="card card-pad" id="pongkaCard">
                 <h2 style="margin-bottom:6px">Pengecekan eDABU — Site Pongkalaero</h2>
                 <p class="note" style="margin:0 0 10px">Status terakhir 6 Nov 2026 dari 8 nama yang dicek manual di eDABU.</p>
@@ -737,7 +686,7 @@
             <div class="page-head">
               <div>
                 <h1>Pengaturan</h1>
-                <p>Pengaturan di halaman ini berlaku untuk <b>perusahaan yang sedang aktif</b> — dipakai di kop file unduhan, surat SPTJM Form 1–4, dan hitung mundur jatuh tempo. Tiap perusahaan punya pengaturannya sendiri. Berlaku selama sesi ini.</p>
+                <p>Pengaturan di halaman ini berlaku untuk <b>perusahaan yang sedang aktif</b> — dipakai di kop file unduhan dan surat SPTJM Form 1–4. Tiap perusahaan punya pengaturannya sendiri. Berlaku selama sesi ini.</p>
               </div>
             </div>
             <div class="card card-pad" style="margin-bottom:16px">
@@ -745,7 +694,6 @@
               <div class="settings-grid">
                 <div class="field"><label>Nama Badan Usaha</label><input type="text" id="setBuName" /></div>
                 <div class="field"><label>Kode Faskes Tk. I Default</label><input type="text" id="setFaskes" class="mono" /><div class="hint">8 digit angka, contoh 12345678</div></div>
-                <div class="field"><label>Tanggal Jatuh Tempo Iuran (tiap bulan)</label><input type="number" id="setDueDay" min="1" max="28" /><div class="hint">Default eDABU: tanggal 10</div></div>
                 <div class="field"><label>Alamat / Site</label><input type="text" id="setSite" /></div>
                 <div class="field"><label>Kode Badan Usaha</label><input type="text" id="setBuCode" class="mono" /></div>
                 <div class="field"><label>Virtual Account</label><input type="text" id="setVa" class="mono" /></div>
@@ -773,11 +721,9 @@
               <div class="settings-grid">
                 <div class="field"><label>Nama Perusahaan <span class="req">*</span></label><input type="text" id="coNewName" placeholder="Nama badan usaha" /></div>
                 <div class="field"><label>Kode Faskes Tk. I Default</label><input type="text" id="coNewFaskes" class="mono" /><div class="hint">8 digit angka — boleh kosong dulu.</div></div>
-                <div class="field"><label>Tanggal Jatuh Tempo Iuran (tiap bulan)</label><input type="number" id="coNewDue" min="1" max="28" value="10" /></div>
                 <div class="field"><label>Alamat / Site</label><input type="text" id="coNewSite" /></div>
                 <div class="field"><label>Jumlah Pegawai (rekap terakhir)</label><input type="number" id="coNewPeg" min="0" value="0" /></div>
                 <div class="field"><label>Jumlah Tanggungan (rekap terakhir)</label><input type="number" id="coNewTg" min="0" value="0" /></div>
-                <div class="field"><label>Iuran Kesehatan Bulan Terakhir (Rp)</label><input type="number" id="coNewIuran" min="0" value="0" /></div>
               </div>
               <div class="panel-actions"><button class="btn primary" id="btnAddCompany">+ Tambah Perusahaan</button></div>
               <p class="note" style="margin-top:10px">Perusahaan baru mulai dengan semua formulir kosong, lalu otomatis menjadi perusahaan aktif.</p>
@@ -823,9 +769,6 @@
 
             <div class="form-cards" id="tkFormCards"></div>
 
-            <div class="card" style="margin-bottom:20px">
-              <div style="padding:13px 20px" class="note">Snapshot iuran BPJS Ketenagakerjaan gabungan (3 Nov 2026): 12 tagihan <b>Rp281.980.294</b> · 542 tenaga kerja · dibutuhkan 8 November 2026. Rekap berubah tiap bulan — cek SIPP untuk tagihan berjalan. Data modul di halaman ini hanya hidup selama sesi: <b>unduh Excel bersih sebelum menutup tab</b>.</div>
-            </div>
 
             <div class="card card-pad">
               <h2 style="margin-bottom:4px">Perlu Diperbaiki — Tenaga Kerja</h2>
@@ -1205,10 +1148,10 @@
     function emptyFilters(){ const o = {}; FORM_KEYS.forEach(k => o[k] = { q:"", status:"all" }); return o; }
     function makeCompany(o){
       return {
-        id: o.id, pegawai: o.pegawai || 0, tanggungan: o.tanggungan || 0, iuranNov: o.iuranNov || 0,
+        id: o.id, pegawai: o.pegawai || 0, tanggungan: o.tanggungan || 0,
         settings: {
           buName: o.name, buCode: o.buCode || "", va: o.va || "", bank: o.bank || "",
-          faskes: o.faskes || "", dueDay: o.dueDay || 10, site: o.site || "",
+          faskes: o.faskes || "", site: o.site || "",
           leader:"", leaderRole:"", leaderPhone:"", leaderEmail:"", city:"", letterNo:""
         },
         DB: emptyForms(), riwayat: emptyRiwayat(), selected: emptySelected(), filters: emptyFilters(),
@@ -1227,7 +1170,7 @@
     }
     // Perusahaan tunggal: PT Anugrah Harisma Barakah
     let COMPANIES = [
-      makeCompany({ id:"ahb", name:"PT Anugrah Harisma Barakah", site:"Site Pongkalaero", pegawai:0, tanggungan:0, iuranNov:0 })
+      makeCompany({ id:"ahb", name:"PT Anugrah Harisma Barakah", site:"Site Pongkalaero", pegawai:0, tanggungan:0 })
     ];
     let activeCompanyId = "ahb";
     const activeCompany = () => COMPANIES.find(c => c.id === activeCompanyId) || COMPANIES[0];
@@ -1385,7 +1328,7 @@
     function rowErrors(formKey, row){ return validateRow(formKey, row, DB[formKey]); }
     function rowErrorsIn(dbRef, formKey, row){ return validateRow(formKey, row, dbRef[formKey]); }
     function statsFor(dbRef){
-      let total=0, bad=0, ok=0, iuranBase=0;
+      let total=0, bad=0, ok=0;
       const perForm = {};
       for(const k of FORM_KEYS){
         let b=0;
@@ -1394,18 +1337,16 @@
         total += dbRef[k].length; bad += b;
       }
       ok = total - bad;
-      for(const r of dbRef.peserta) iuranBase += Math.max(0, parseMoney(r.gaji)) || 0;
-      for(const r of dbRef.gaji) iuranBase += Math.max(0, parseMoney(r.gaji)) || 0;
-      return { total, bad, ok, perForm, iuran: iuranBase * 0.05 };
+      return { total, bad, ok, perForm };
     }
     function allStats(){ return statsFor(DB); }
     function combinedStats(){
-      let iuran = 0, pegawai = 0, tanggungan = 0, bad = 0, total = 0;
+      let pegawai = 0, tanggungan = 0, bad = 0, total = 0;
       for(const c of COMPANIES){
-        iuran += c.iuranNov; pegawai += c.pegawai; tanggungan += c.tanggungan;
+        pegawai += c.pegawai; tanggungan += c.tanggungan;
         const st = statsFor(c.DB); bad += st.bad; total += st.total;
       }
-      return { iuran, pegawai, tanggungan, bad, total, nCompanies: COMPANIES.length };
+      return { pegawai, tanggungan, bad, total, nCompanies: COMPANIES.length };
     }
 
     /* ================= NAVIGASI (berkelompok) ================= */
@@ -1507,14 +1448,6 @@
 
     /* ================= RINGKASAN ================= */
     let chartForms = null, chartNonaktif = null;
-    function dueInfo(){
-      const now = new Date();
-      let due = new Date(now.getFullYear(), now.getMonth(), settings.dueDay);
-      if(now > due) due = new Date(now.getFullYear(), now.getMonth()+1, settings.dueDay);
-      const days = Math.ceil((due - new Date(now.getFullYear(), now.getMonth(), now.getDate())) / 86400000);
-      const fmt = due.toLocaleDateString("id-ID", { day:"numeric", month:"long", year:"numeric" });
-      return { due, days, fmt };
-    }
     function setBar(fillId, lblId, pct, lbl){
       const f = $("#" + fillId); if(f) f.style.width = Math.max(0, Math.min(100, pct)) + "%";
       const l = $("#" + lblId); if(l) l.textContent = lbl;
@@ -1537,42 +1470,19 @@
       setBar("kpiBadFill", "kpiBadLbl", pct(st.bad, st.total), st.total ? (st.bad ? st.bad + " dari " + st.total + " baris bermasalah — perlu diperbaiki" : "Semua baris valid") : "Belum ada baris untuk divalidasi");
       $("#kpiOk").textContent = st.ok;
       setBar("kpiOkFill", "kpiOkLbl", pct(st.ok, st.total), pct(st.ok, st.total) + "% dari total baris siap upload");
-      $("#kpiIuran").textContent = rp(st.iuran);
-      setBar("kpiIuranFill", "kpiIuranLbl", co.iuranNov ? st.iuran / co.iuranNov * 100 : 0,
-        co.iuranNov ? "Estimasi dari gaji terinput vs tagihan " + rp(co.iuranNov) + " (Nov 2026, perusahaan ini)" : "Tidak ada data tagihan Nov 2026 untuk perusahaan ini");
-      const d = dueInfo();
-      $("#dueBanner").innerHTML = ICON_CAL + "<span>Jatuh tempo iuran BPJS Kesehatan berikutnya: <b>" + esc(d.fmt) + "</b> — sesudah itu peserta berisiko nonaktif karena premi.</span><span class='days'>" + (d.days === 0 ? "Hari ini" : d.days + " hari lagi") + "</span>";
       // Total gabungan semua perusahaan
       const comb = combinedStats();
       $("#combinedCard").innerHTML =
         '<span class="c-title">Total Gabungan — ' + comb.nCompanies + " Perusahaan</span>" +
-        '<span class="c-item">Total Iuran Kesehatan Nov 2026<b>' + rp(comb.iuran) + '</b></span>' +
         '<span class="c-item">Total Pegawai<b>' + comb.pegawai.toLocaleString("id-ID") + '</b></span>' +
         '<span class="c-item">Total Tanggungan<b>' + comb.tanggungan.toLocaleString("id-ID") + '</b></span>' +
-        '<span class="c-item">Total Baris Bermasalah (semua perusahaan)<b class="' + (comb.bad ? "bad" : "") + '">' + comb.bad + '</b></span>' +
-        '<span class="c-item">Jatuh tempo gabungan<b>10 November 2026</b></span>';
+        '<span class="c-item">Total Baris Bermasalah (semua perusahaan)<b class="' + (comb.bad ? "bad" : "") + '">' + comb.bad + '</b></span>';
       // Kartu per formulir (perusahaan aktif)
       $("#formCards").innerHTML = FORM_KEYS.map(k => {
         const p = st.perForm[k];
         return '<button class="card form-card" data-goto="' + k + '"><div class="fc-name">' + esc(SCHEMAS[k].menu) + '</div><div class="fc-num">' + p.n + '</div><div class="fc-sub">' + (p.n === 0 ? "masih kosong" : p.bad ? '<span class="bad">' + p.bad + " bermasalah</span>" : "semua siap") + "</div></button>";
       }).join("");
       document.querySelectorAll("[data-goto]").forEach(b => b.addEventListener("click", () => go(b.dataset.goto)));
-      // Iuran perusahaan aktif (dihitung dinamis dari data yang diinput/diimpor)
-      const nPeg = co.DB.peserta.length + co.DB.mutasi.length;
-      const nTang = co.DB.angkel.length;
-      let calcIuran = 0;
-      co.DB.peserta.forEach(r => { const g = parseMoney(r.gaji); if(g > 0) calcIuran += Math.round(g * 0.05); });
-      co.DB.gaji.forEach(r => { const g = parseMoney(r.gaji); if(g > 0) calcIuran += Math.round(g * 0.05); });
-      const currentIuran = calcIuran > 0 ? calcIuran : (co.iuranNov || 0);
-      const currentPeg = nPeg > 0 ? nPeg : (co.pegawai || 0);
-      const currentTang = nTang > 0 ? nTang : (co.tanggungan || 0);
-
-      $("#iuranCoAmt").textContent = rp(currentIuran);
-      $("#iuranCoName").textContent = settings.buName;
-      $("#iuranBuCode").textContent = settings.buCode || "— (isi di Pengaturan)";
-      $("#iuranVa").textContent = settings.va || "— (isi di Pengaturan)";
-      $("#iuranBank").textContent = (settings.bank || "—") + " (Faskes " + (settings.faskes || "—") + ")";
-      $("#iuranCoCover").textContent = currentPeg.toLocaleString("id-ID") + " pegawai + " + currentTang.toLocaleString("id-ID") + " tanggungan";
       // Kartu Pongkalaero hanya relevan untuk AHB
       $("#pongkaCard").style.display = co.id === "ahb" ? "" : "none";
       // Tabel bermasalah sesuai cakupan (perusahaan ini / semua perusahaan)
@@ -1587,7 +1497,6 @@
         go(tr.dataset.badgo);
       }));
       renderPongka();
-      updateCalc();
       drawCharts(st);
     }
     $("#scopeActive").addEventListener("click", () => { summaryScope = "active"; $("#scopeActive").classList.add("active"); $("#scopeAll").classList.remove("active"); renderSummary(); });
@@ -1631,15 +1540,6 @@
         data:{ labels:["Tidak Ditanggung","Meninggal","PHK","Cerai","Lainnya/kosong"], datasets:[{ data:[byJenis["1"],byJenis["2"],byJenis["4"],byJenis["6"],byJenis.lain], backgroundColor:["#2563EB","#64748B","#DC2626","#D97706","#94A3B8"], borderWidth: 2, borderColor: surf }]},
         options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:"bottom", labels:{ boxWidth:12 } } } } });
     }
-    function updateCalc(){
-      const g = Number($("#calcGaji").value) || 0;
-      $("#calcOut").innerHTML =
-        '<div style="display:grid;gap:4px;font-size:14px">' +
-        '<div>Perusahaan (4%): <b>' + rp(g*0.04) + '</b></div>' +
-        '<div>Pekerja (1%): <b>' + rp(g*0.01) + '</b></div>' +
-        '<div style="border-top:1px solid var(--line);padding-top:6px">Total iuran (5%): <b>' + rp(g*0.05) + '</b> / bulan</div></div>';
-    }
-    $("#calcGaji").addEventListener("input", updateCalc);
 
     /* ================= FORMULIR ================= */
     function filteredRows(k){
@@ -2023,7 +1923,7 @@
       $("#sideSite").textContent = (settings.site || "—") + " — Admin HR";
       $("#topCompany").textContent = "eDABU — " + settings.buName;
       $("#activeCompanyName").textContent = settings.buName;
-      $("#activeCompanyMeta").textContent = c.pegawai.toLocaleString("id-ID") + " pegawai · " + c.tanggungan.toLocaleString("id-ID") + " tanggungan · Iuran Nov 2026 " + rp(c.iuranNov);
+      $("#activeCompanyMeta").textContent = c.pegawai.toLocaleString("id-ID") + " pegawai · " + c.tanggungan.toLocaleString("id-ID") + " tanggungan";
       const sel = $("#companySelect"); if(sel) sel.value = activeCompanyId;
     }
     function renderCompanySelect(){
@@ -2060,7 +1960,7 @@
           '<span style="flex:1"></span>' +
           (isAct ? "" : '<button class="btn small" data-co-act="' + c.id + '">Aktifkan</button>') +
           '<button class="btn small danger" data-co-del="' + c.id + '">Hapus</button>' +
-          '<span class="co-meta">Faskes ' + esc(c.settings.faskes || "—") + " · Jatuh tempo tgl " + c.settings.dueDay + " · " + c.pegawai.toLocaleString("id-ID") + " pegawai · " + c.tanggungan.toLocaleString("id-ID") + " tanggungan · Iuran Nov 2026 " + rp(c.iuranNov) + " · Data sesi ini: " + st.total + " baris (" + st.bad + " bermasalah)</span></div>";
+          '<span class="co-meta">Faskes ' + esc(c.settings.faskes || "—") + " · " + c.pegawai.toLocaleString("id-ID") + " pegawai · " + c.tanggungan.toLocaleString("id-ID") + " tanggungan · Data sesi ini: " + st.total + " baris (" + st.bad + " bermasalah)</span></div>";
       }).join("");
       el.querySelectorAll("[data-co-act]").forEach(b => b.addEventListener("click", () => switchCompany(b.dataset.coAct)));
       el.querySelectorAll("[data-co-del]").forEach(b => b.addEventListener("click", () => {
@@ -2078,12 +1978,10 @@
       const name = $("#coNewName").value.trim();
       if(!name) return toast("Nama perusahaan wajib diisi untuk menambah perusahaan.");
       const nc = makeCompany({ id:"co" + Date.now().toString(36), name,
-        faskes: $("#coNewFaskes").value.trim(),
-        dueDay: Math.min(28, Math.max(1, +$("#coNewDue").value || 10)), site: $("#coNewSite").value.trim(),
-        pegawai: +$("#coNewPeg").value || 0, tanggungan: +$("#coNewTg").value || 0, iuranNov: +$("#coNewIuran").value || 0 });
+        faskes: $("#coNewFaskes").value.trim(), site: $("#coNewSite").value.trim(),
+        pegawai: +$("#coNewPeg").value || 0, tanggungan: +$("#coNewTg").value || 0 });
       COMPANIES.push(nc); persistCompanies();
-      ["coNewName","coNewFaskes","coNewSite","coNewPeg","coNewTg","coNewIuran"].forEach(id => { $("#" + id).value = ""; });
-      $("#coNewDue").value = "10";
+      ["coNewName","coNewFaskes","coNewSite","coNewPeg","coNewTg"].forEach(id => { $("#" + id).value = ""; });
       switchCompany(nc.id, true);
       renderCompanyList();
       toast("Perusahaan " + name + " ditambahkan dengan semua formulir kosong, dan menjadi perusahaan aktif.");
@@ -2101,7 +1999,7 @@
     function persistCompanies(){
       try{
         localStorage.setItem(CO_STORE_KEY, JSON.stringify({ active: activeCompanyId,
-          list: COMPANIES.map(c => ({ id:c.id, pegawai:c.pegawai, tanggungan:c.tanggungan, iuranNov:c.iuranNov, settings:c.settings })) }));
+          list: COMPANIES.map(c => ({ id:c.id, pegawai:c.pegawai, tanggungan:c.tanggungan, settings:c.settings })) }));
       }catch(e){}
     }
     function loadStoredCompanies(){
@@ -2111,7 +2009,7 @@
         if(!st || !Array.isArray(st.list) || !st.list.length) return;
         COMPANIES = st.list.map(o => {
           const c = makeCompany({ id:String(o.id), name:String(o.settings && o.settings.buName || "Perusahaan"),
-            pegawai:+o.pegawai||0, tanggungan:+o.tanggungan||0, iuranNov:+o.iuranNov||0 });
+            pegawai:+o.pegawai||0, tanggungan:+o.tanggungan||0 });
           Object.keys(c.settings).forEach(k => { if(o.settings && typeof o.settings[k] === typeof c.settings[k]) c.settings[k] = o.settings[k]; });
           return c;
         });
@@ -2129,7 +2027,7 @@
     function loadSettingsForm(){
       $("#setBuName").value = settings.buName;
       $("#setBuCode").value = settings.buCode || ""; $("#setVa").value = settings.va || ""; $("#setBank").value = settings.bank || "";
-      $("#setFaskes").value = settings.faskes; $("#setDueDay").value = settings.dueDay; $("#setSite").value = settings.site;
+      $("#setFaskes").value = settings.faskes; $("#setSite").value = settings.site;
       $("#setLeader").value = settings.leader; $("#setLeaderRole").value = settings.leaderRole;
       $("#setLeaderPhone").value = settings.leaderPhone; $("#setLeaderEmail").value = settings.leaderEmail;
       $("#setCity").value = settings.city; $("#setLetterNo").value = settings.letterNo;
@@ -2137,7 +2035,7 @@
     $("#btnSaveSettings").addEventListener("click", () => {
       Object.assign(settings, { buName: $("#setBuName").value.trim() || settings.buName,
         buCode: $("#setBuCode").value.trim(), va: $("#setVa").value.trim(), bank: $("#setBank").value.trim(),
-        faskes: $("#setFaskes").value.trim(), dueDay: Math.min(28, Math.max(1, +$("#setDueDay").value || 10)), site: $("#setSite").value.trim(),
+        faskes: $("#setFaskes").value.trim(), site: $("#setSite").value.trim(),
         leader: $("#setLeader").value.trim(), leaderRole: $("#setLeaderRole").value.trim(), leaderPhone: $("#setLeaderPhone").value.trim(),
         leaderEmail: $("#setLeaderEmail").value.trim(), city: $("#setCity").value.trim(), letterNo: $("#setLetterNo").value.trim() });
       updateCompanyUI(); renderCompanySelect(); renderCompanyList(); persistCompanies();
