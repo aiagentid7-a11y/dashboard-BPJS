@@ -1,0 +1,1 @@
+{"dependencies":{},"description":"Dashboard BPJS Kesehatan (eDABU) dan BPJS Tenaga Kerja — single-file web app (dashboard v8)","devDependencies":{},"keywords":["bpjs","edabu","dashboard","hr"],"license":"UNLICENSED","main":"index.html","name":"dashboard-bpjs","private":true,"scripts":{"dev":"npx serve .","start":"npx serve ."},"version":"1.0.0"}
