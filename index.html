@@ -496,10 +496,10 @@
               <div class="iuran-grid">
                 <div class="iuran-cell">
                   <span class="tag">BPJS Kesehatan — PT Anugrah Harisma Barakah</span>
-                  <div class="amt" style="margin-top:8px" id="iuranCoAmt">Rp102.357.508</div>
+                  <div class="amt" style="margin-top:8px" id="iuranCoAmt">Rp0</div>
                   <dl>
                     <dt>Perusahaan</dt><dd id="iuranCoName">PT Anugrah Harisma Barakah</dd>
-                    <dt>Cakupan</dt><dd id="iuranCoCover">530 pegawai + 802 tanggungan</dd>
+                    <dt>Cakupan</dt><dd id="iuranCoCover">0 pegawai + 0 tanggungan</dd>
                     <dt>Jatuh tempo</dt><dd>10 November 2026</dd>
                   </dl>
                 </div>
@@ -507,9 +507,9 @@
                   <span class="tag">BPJS Ketenagakerjaan — PT Anugrah Harisma Barakah</span>
                   <div class="amt" style="margin-top:8px">Site Pongkalaero</div>
                   <dl>
-                    <dt>Kode BU</dt><dd>80081667</dd>
-                    <dt>Virtual Account</dt><dd>8988890080081667</dd>
-                    <dt>Bank / Faskes</dt><dd>Mandiri (Faskes 19031702)</dd>
+                    <dt>Kode BU</dt><dd id="iuranBuCode">—</dd>
+                    <dt>Virtual Account</dt><dd id="iuranVa">—</dd>
+                    <dt>Bank / Faskes</dt><dd id="iuranBank">—</dd>
                   </dl>
                 </div>
               </div>
@@ -744,10 +744,14 @@
               <h2 style="margin-bottom:14px">Badan Usaha</h2>
               <div class="settings-grid">
                 <div class="field"><label>Nama Badan Usaha</label><input type="text" id="setBuName" /></div>
-                <div class="field"><label>Kode Faskes Tk. I Default</label><input type="text" id="setFaskes" class="mono" /><div class="hint">8 digit angka, contoh 19031702</div></div>
+                <div class="field"><label>Kode Faskes Tk. I Default</label><input type="text" id="setFaskes" class="mono" /><div class="hint">8 digit angka, contoh 12345678</div></div>
                 <div class="field"><label>Tanggal Jatuh Tempo Iuran (tiap bulan)</label><input type="number" id="setDueDay" min="1" max="28" /><div class="hint">Default eDABU: tanggal 10</div></div>
                 <div class="field"><label>Alamat / Site</label><input type="text" id="setSite" /></div>
+                <div class="field"><label>Kode Badan Usaha</label><input type="text" id="setBuCode" class="mono" /></div>
+                <div class="field"><label>Virtual Account</label><input type="text" id="setVa" class="mono" /></div>
+                <div class="field"><label>Bank</label><input type="text" id="setBank" /></div>
               </div>
+              <div class="hint" style="margin-top:8px">Pengaturan perusahaan disimpan di browser ini saja (localStorage), tidak pernah masuk ke kode atau repo. Data pegawai tidak disimpan.</div>
             </div>
             <div class="card card-pad" style="margin-bottom:16px">
               <h2 style="margin-bottom:14px">Pimpinan (untuk SPTJM)</h2>
@@ -1155,7 +1159,7 @@
     <script src="/vendor/chart.umd.min.js"></script>
     <script>
       if (typeof XLSX === "undefined") {
-        document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"><\/script>');
+        document.write('<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"><\/script>');
       }
       if (typeof Chart === "undefined") {
         document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"><\/script>');
@@ -1223,7 +1227,7 @@
     }
     // Perusahaan tunggal: PT Anugrah Harisma Barakah
     let COMPANIES = [
-      makeCompany({ id:"ahb", name:"PT Anugrah Harisma Barakah", site:"Site Pongkalaero", buCode:"80081667", va:"8988890080081667", bank:"Mandiri", faskes:"19031702", pegawai:530, tanggungan:802, iuranNov:102357508 })
+      makeCompany({ id:"ahb", name:"PT Anugrah Harisma Barakah", site:"Site Pongkalaero", pegawai:0, tanggungan:0, iuranNov:0 })
     ];
     let activeCompanyId = "ahb";
     const activeCompany = () => COMPANIES.find(c => c.id === activeCompanyId) || COMPANIES[0];
@@ -1257,7 +1261,34 @@
     const $ = s => document.querySelector(s);
     const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
     const digits = s => String(s ?? "").replace(/\D/g,"");
-    const rp = n => "Rp" + Math.round(Number(n)||0).toLocaleString("id-ID");
+    const MAX_UPLOAD = 10 * 1024 * 1024;
+    // Angka rupiah format Indonesia ("5.000.000", "5.000.000,50", "Rp 5.000.000") maupun format teknis ("5000000.5")
+    function parseMoney(v){
+      if(typeof v === "number") return v;
+      let t = String(v ?? "").replace(/rp\.?/ig,"").replace(/\s/g,"");
+      if(!t) return NaN;
+      const dot = t.includes("."), com = t.includes(",");
+      if(dot && com){ t = t.lastIndexOf(",") > t.lastIndexOf(".") ? t.replace(/\./g,"").replace(",",".") : t.replace(/,/g,""); }
+      else if(dot){ if(/^-?\d{1,3}(\.\d{3})+$/.test(t)) t = t.replace(/\./g,""); }
+      else if(com){ t = /^-?\d{1,3}(,\d{3})+$/.test(t) ? t.replace(/,/g,"") : t.replace(",","."); }
+      t = t.replace(/[^\d.-]/g,"");
+      return t ? Number(t) : NaN;
+    }
+    const rp = n => "Rp" + Math.round(typeof n === "number" ? (n||0) : (parseMoney(n)||0)).toLocaleString("id-ID");
+    // Normalisasi sel Excel (dibaca raw:true): tanggal -> dd/mm/yyyy, angka panjang tanpa notasi ilmiah, JKN dilengkapi nol di depan
+    function normCellEd(v, type){
+      if(v === null || v === undefined) return "";
+      if(v instanceof Date){
+        const d = new Date(v.getTime() + 12*3600*1000); // jaga dari selisih zona waktu SheetJS
+        return String(d.getDate()).padStart(2,"0") + "/" + String(d.getMonth()+1).padStart(2,"0") + "/" + d.getFullYear();
+      }
+      if(typeof v === "number" && isFinite(v)){
+        let t = Number.isInteger(v) ? v.toLocaleString("fullwide",{ useGrouping:false }) : String(v);
+        if(type === "jkn" && /^\d+$/.test(t) && t.length < 13) t = t.padStart(13,"0");
+        return t;
+      }
+      return String(v).trim();
+    }
     function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove("show"),3400); }
     function parseDateDMY(s){
       const m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(String(s||"").trim());
@@ -1305,7 +1336,7 @@
           else if(!/^[A-Za-z0-9]{5}$/.test(v)) errs.push("Kode Desa harus tepat 5 karakter alfanumerik (mis. C1693)");
         }
         if(type === "faskes" && !/^\d{8}$/.test(digits(v))) errs.push("Kode Faskes Tk.I harus 8 digit angka");
-        if(type === "money" && !(Number(String(v).replace(/[^\d.-]/g,"")) > 0)) errs.push(label + " harus angka lebih dari 0");
+        if(type === "money" && !(parseMoney(v) > 0)) errs.push(label + " harus angka lebih dari 0");
         if(type.startsWith("select:")){
           const o = OPT[type.slice(7)];
           if(o && !(v in o)) errs.push(label + " tidak sesuai daftar kode eDABU");
@@ -1313,8 +1344,8 @@
       }
       // duplikat
       for(const dupKey of ["nik","jkn"]){
-        const v = get(dupKey);
-        if(v && allRows.some(r => r._id !== row._id && String(r[dupKey]??"").trim() === v))
+        const v = digits(get(dupKey));
+        if(v && allRows.some(r => r._id !== row._id && digits(r[dupKey]) === v))
           errs.push((dupKey === "nik" ? "NIK" : "No Kartu JKN KIS") + " duplikat di formulir ini");
       }
       // aturan khusus penonaktifan
@@ -1363,8 +1394,8 @@
         total += dbRef[k].length; bad += b;
       }
       ok = total - bad;
-      for(const r of dbRef.peserta) iuranBase += Number(String(r.gaji||"").replace(/[^\d]/g,""))||0;
-      for(const r of dbRef.gaji) iuranBase += Number(String(r.gaji||"").replace(/[^\d]/g,""))||0;
+      for(const r of dbRef.peserta) iuranBase += Math.max(0, parseMoney(r.gaji)) || 0;
+      for(const r of dbRef.gaji) iuranBase += Math.max(0, parseMoney(r.gaji)) || 0;
       return { total, bad, ok, perForm, iuran: iuranBase * 0.05 };
     }
     function allStats(){ return statsFor(DB); }
@@ -1526,10 +1557,22 @@
         return '<button class="card form-card" data-goto="' + k + '"><div class="fc-name">' + esc(SCHEMAS[k].menu) + '</div><div class="fc-num">' + p.n + '</div><div class="fc-sub">' + (p.n === 0 ? "masih kosong" : p.bad ? '<span class="bad">' + p.bad + " bermasalah</span>" : "semua siap") + "</div></button>";
       }).join("");
       document.querySelectorAll("[data-goto]").forEach(b => b.addEventListener("click", () => go(b.dataset.goto)));
-      // Iuran perusahaan aktif
-      $("#iuranCoAmt").textContent = rp(co.iuranNov);
+      // Iuran perusahaan aktif (dihitung dinamis dari data yang diinput/diimpor)
+      const nPeg = co.DB.peserta.length + co.DB.mutasi.length;
+      const nTang = co.DB.angkel.length;
+      let calcIuran = 0;
+      co.DB.peserta.forEach(r => { const g = parseMoney(r.gaji); if(g > 0) calcIuran += Math.round(g * 0.05); });
+      co.DB.gaji.forEach(r => { const g = parseMoney(r.gaji); if(g > 0) calcIuran += Math.round(g * 0.05); });
+      const currentIuran = calcIuran > 0 ? calcIuran : (co.iuranNov || 0);
+      const currentPeg = nPeg > 0 ? nPeg : (co.pegawai || 0);
+      const currentTang = nTang > 0 ? nTang : (co.tanggungan || 0);
+
+      $("#iuranCoAmt").textContent = rp(currentIuran);
       $("#iuranCoName").textContent = settings.buName;
-      $("#iuranCoCover").textContent = co.pegawai.toLocaleString("id-ID") + " pegawai + " + co.tanggungan.toLocaleString("id-ID") + " tanggungan";
+      $("#iuranBuCode").textContent = settings.buCode || "— (isi di Pengaturan)";
+      $("#iuranVa").textContent = settings.va || "— (isi di Pengaturan)";
+      $("#iuranBank").textContent = (settings.bank || "—") + " (Faskes " + (settings.faskes || "—") + ")";
+      $("#iuranCoCover").textContent = currentPeg.toLocaleString("id-ID") + " pegawai + " + currentTang.toLocaleString("id-ID") + " tanggungan";
       // Kartu Pongkalaero hanya relevan untuk AHB
       $("#pongkaCard").style.display = co.id === "ahb" ? "" : "none";
       // Tabel bermasalah sesuai cakupan (perusahaan ini / semua perusahaan)
@@ -1690,7 +1733,7 @@
       let added = 0;
       for(const r of dataRows){
         const row = { _id: nid() };
-        sch.cols.forEach((c, idx) => { row[c[0]] = String(r[idx+1] ?? "").trim(); });
+        sch.cols.forEach((c, idx) => { row[c[0]] = normCellEd(r[idx+1], c[2]); });
         DB[k].push(row); added++;
       }
       const bad = DB[k].slice(-added).filter(r => rowErrors(k, r).length).length;
@@ -1713,22 +1756,33 @@
     $("#fileInput").addEventListener("change", e => {
       const file = e.target.files[0]; e.target.value = "";
       if(!file) return;
+      if(file.size > MAX_UPLOAD) return toast("File terlalu besar (maks 10 MB).");
       if(typeof XLSX === "undefined") return toast("Library Excel belum termuat — periksa koneksi atau muat ulang.");
       const k = currentForm;
       const reader = new FileReader();
       reader.onload = ev => {
         try {
-          const wb = XLSX.read(new Uint8Array(ev.target.result), { type:"array", cellDates:true, raw:false });
+          const wb = XLSX.read(new Uint8Array(ev.target.result), { type:"array", cellDates:true });
           const ws = wb.Sheets[wb.SheetNames[0]];
-          const aoa = XLSX.utils.sheet_to_json(ws, { header:1, raw:false, defval:"" });
+          const aoa = XLSX.utils.sheet_to_json(ws, { header:1, raw:true, defval:"" });
           if(!aoa || !aoa.length){ $("#uploadInfo").innerHTML = '<div class="warn-box"><b>File kosong.</b>Silakan pilih file Excel atau CSV yang berisi data.</div>'; return; }
           
           let headerRowIdx = -1;
+          const normH = x => String(x ?? "").toLowerCase().replace(/[^a-z0-9]/g,"");
+          const labelSet = new Set(SCHEMAS[k].cols.map(c => normH(c[1])));
+          let bestScore = 0;
           for(let i = 0; i < Math.min(25, aoa.length); i++){
-            const rowStr = (aoa[i] || []).map(c => String(c ?? "").toLowerCase()).join(" ");
-            if(rowStr.includes("nik") || rowStr.includes("no kk") || rowStr.includes("nama") || rowStr.includes("pisat") || rowStr.includes("gaji") || rowStr.includes("nomor")){
-              headerRowIdx = i;
-              break;
+            const score = (aoa[i] || []).filter(c => { const n = normH(c); return n && labelSet.has(n); }).length;
+            if(score > bestScore){ bestScore = score; headerRowIdx = i; }
+          }
+          if(bestScore < 2){
+            headerRowIdx = -1;
+            for(let i = 0; i < Math.min(25, aoa.length); i++){
+              const cells = (aoa[i] || []).filter(c => String(c ?? "").trim() !== "");
+              const rowStr = cells.map(c => String(c).toLowerCase()).join(" ");
+              if(cells.length >= 3 && (rowStr.includes("nik") || rowStr.includes("no kk") || rowStr.includes("nama") || rowStr.includes("pisat") || rowStr.includes("gaji") || rowStr.includes("nomor"))){
+                headerRowIdx = i; break;
+              }
             }
           }
           let startIdx = 16;
@@ -1740,7 +1794,9 @@
           
           // Cocokkan kop badan usaha di file dengan perusahaan aktif
           const kop = parseKop(aoa);
-          if(kop.code && settings.buCode && digits(kop.code) !== digits(settings.buCode)){
+          const sameName = kop.name && kop.name.trim().toLowerCase() === String(settings.buName).trim().toLowerCase();
+          if(kop.code && !settings.buCode && sameName){ settings.buCode = kop.code; persistCompanies(); }
+          if(kop.code && ((settings.buCode && digits(kop.code) !== digits(settings.buCode)) || (!settings.buCode && kop.name && !sameName))){
             const match = COMPANIES.find(c => digits(c.settings.buCode) === digits(kop.code));
             let h = '<div class="warn-box"><b>File ini bukan untuk perusahaan aktif.</b>' +
               'File ini berkop <b>' + esc(kop.name || "—") + '</b>, sedangkan perusahaan aktif adalah <b>' + esc(settings.buName) + '</b>. ' + dataRows.length + ' baris belum diimpor — pilih tindakan:' +
@@ -1754,7 +1810,7 @@
             const cr = $("#kopCreate");
             if(cr) cr.addEventListener("click", () => {
               const nc = makeCompany({ id:"co" + Date.now().toString(36), name: kop.name || "Perusahaan baru", buCode: kop.code });
-              COMPANIES.push(nc); renderCompanySelect(); switchCompany(nc.id, true); doImport(k, dataRows, file.name);
+              COMPANIES.push(nc); persistCompanies(); renderCompanySelect(); switchCompany(nc.id, true); doImport(k, dataRows, file.name);
               toast("Perusahaan baru dibuat dari kop file dan menjadi perusahaan aktif.");
             });
             $("#kopForce").addEventListener("click", () => doImport(k, dataRows, file.name));
@@ -1978,7 +2034,7 @@
     function switchCompany(id, silent){
       if(!COMPANIES.some(c => c.id === id)) return;
       activeCompanyId = id;
-      bindCompany();
+      bindCompany(); persistCompanies();
       editingId = null;
       updateCompanyUI();
       renderCompanySelect();
@@ -2013,7 +2069,7 @@
           const target = COMPANIES.find(c => c.id === b.dataset.coDel);
           COMPANIES = COMPANIES.filter(c => c.id !== b.dataset.coDel);
           if(activeCompanyId === b.dataset.coDel){ activeCompanyId = COMPANIES[0].id; bindCompany(); }
-          updateCompanyUI(); renderCompanySelect(); renderCompanyList(); loadSettingsForm(); buildNav();
+          persistCompanies(); updateCompanyUI(); renderCompanySelect(); renderCompanyList(); loadSettingsForm(); buildNav();
           toast("Perusahaan " + (target ? target.settings.buName : "") + " dihapus beserta seluruh datanya di sesi ini.");
         });
       }));
@@ -2025,7 +2081,7 @@
         faskes: $("#coNewFaskes").value.trim(),
         dueDay: Math.min(28, Math.max(1, +$("#coNewDue").value || 10)), site: $("#coNewSite").value.trim(),
         pegawai: +$("#coNewPeg").value || 0, tanggungan: +$("#coNewTg").value || 0, iuranNov: +$("#coNewIuran").value || 0 });
-      COMPANIES.push(nc);
+      COMPANIES.push(nc); persistCompanies();
       ["coNewName","coNewFaskes","coNewSite","coNewPeg","coNewTg","coNewIuran"].forEach(id => { $("#" + id).value = ""; });
       $("#coNewDue").value = "10";
       switchCompany(nc.id, true);
@@ -2040,9 +2096,39 @@
     document.querySelectorAll(".theme-toggle").forEach(b => b.addEventListener("click", () =>
       setTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark")));
 
+    /* ================= PENYIMPANAN PENGATURAN (lokal, tanpa data pegawai) ================= */
+    const CO_STORE_KEY = "bpjs-companies-v1";
+    function persistCompanies(){
+      try{
+        localStorage.setItem(CO_STORE_KEY, JSON.stringify({ active: activeCompanyId,
+          list: COMPANIES.map(c => ({ id:c.id, pegawai:c.pegawai, tanggungan:c.tanggungan, iuranNov:c.iuranNov, settings:c.settings })) }));
+      }catch(e){}
+    }
+    function loadStoredCompanies(){
+      try{
+        const raw = localStorage.getItem(CO_STORE_KEY); if(!raw) return;
+        const st = JSON.parse(raw);
+        if(!st || !Array.isArray(st.list) || !st.list.length) return;
+        COMPANIES = st.list.map(o => {
+          const c = makeCompany({ id:String(o.id), name:String(o.settings && o.settings.buName || "Perusahaan"),
+            pegawai:+o.pegawai||0, tanggungan:+o.tanggungan||0, iuranNov:+o.iuranNov||0 });
+          Object.keys(c.settings).forEach(k => { if(o.settings && typeof o.settings[k] === typeof c.settings[k]) c.settings[k] = o.settings[k]; });
+          return c;
+        });
+        activeCompanyId = COMPANIES.some(c => c.id === st.active) ? st.active : COMPANIES[0].id;
+      }catch(e){}
+    }
+    // Peringatan sebelum tab ditutup bila ada data pegawai/arsip yang belum diunduh
+    function hasUnsavedData(){
+      return COMPANIES.some(c =>
+        Object.values(c.DB).some(a => a.length) || Object.values(c.tkDB).some(a => a.length) || (c.arsip && c.arsip.length));
+    }
+    window.addEventListener("beforeunload", e => { if(hasUnsavedData()){ e.preventDefault(); e.returnValue = ""; } });
+
     /* ================= PENGATURAN ================= */
     function loadSettingsForm(){
       $("#setBuName").value = settings.buName;
+      $("#setBuCode").value = settings.buCode || ""; $("#setVa").value = settings.va || ""; $("#setBank").value = settings.bank || "";
       $("#setFaskes").value = settings.faskes; $("#setDueDay").value = settings.dueDay; $("#setSite").value = settings.site;
       $("#setLeader").value = settings.leader; $("#setLeaderRole").value = settings.leaderRole;
       $("#setLeaderPhone").value = settings.leaderPhone; $("#setLeaderEmail").value = settings.leaderEmail;
@@ -2050,11 +2136,12 @@
     }
     $("#btnSaveSettings").addEventListener("click", () => {
       Object.assign(settings, { buName: $("#setBuName").value.trim() || settings.buName,
+        buCode: $("#setBuCode").value.trim(), va: $("#setVa").value.trim(), bank: $("#setBank").value.trim(),
         faskes: $("#setFaskes").value.trim(), dueDay: Math.min(28, Math.max(1, +$("#setDueDay").value || 10)), site: $("#setSite").value.trim(),
         leader: $("#setLeader").value.trim(), leaderRole: $("#setLeaderRole").value.trim(), leaderPhone: $("#setLeaderPhone").value.trim(),
         leaderEmail: $("#setLeaderEmail").value.trim(), city: $("#setCity").value.trim(), letterNo: $("#setLetterNo").value.trim() });
-      updateCompanyUI(); renderCompanySelect(); renderCompanyList();
-      toast("Pengaturan " + settings.buName + " tersimpan untuk sesi ini.");
+      updateCompanyUI(); renderCompanySelect(); renderCompanyList(); persistCompanies();
+      toast("Pengaturan " + settings.buName + " tersimpan di browser ini.");
     });
 
     /* ================= DATA CONTOH (fiktif) ================= */
@@ -2069,7 +2156,7 @@
     });
     function loadSample(){
       FORM_KEYS.forEach(k => { DB[k] = []; selected[k].clear(); });
-      const base = { nokk:"7404010101900001", alamat:"Site Pongkalaero", rt:"01", rw:"01", kodepos:"93700", desa:"A8691", faskes: settings.faskes || "19031702", gigi:"", unit:"PONGKALAERO" };
+      const base = { nokk:"7404010101900001", alamat:"Site Pongkalaero", rt:"01", rw:"01", kodepos:"93700", desa:"A8691", faskes: settings.faskes || "12345678", gigi:"", unit:"PONGKALAERO" };
       DB.peserta = [
         Object.assign({}, base, { _id:nid(), nik:"7404011203950001", nama:"Muh. Saratunsara Husain", pisat:"1", tgllahir:"12/03/1995", tmptlahir:"Pongkalaero", jk:"1", kawin:"1", telp:"081234567801", email:"saratunsara@gmail.com", nip:"AHB-001", jabatan:"Operator", statuspeg:"2", gaji:"6752400", npwp:"" }),
         Object.assign({}, base, { _id:nid(), nik:"7404011506960002", nama:"La Ode Yusril", pisat:"1", tgllahir:"15/06/1996", tmptlahir:"Baubau", jk:"1", kawin:"1", telp:"081234567802", email:"yusril@gmail.com", nip:"AHB-002", jabatan:"Mechanic", statuspeg:"2", gaji:"6752400", npwp:"" }),
@@ -2079,7 +2166,7 @@
         Object.assign({}, base, { _id:nid(), nik:"7404010505000006", nama:"Ari Hardiansyah", pisat:"1", tgllahir:"05/05/2000", tmptlahir:"Kolaka", jk:"1", kawin:"1", telp:"081234567806", email:"ari@gmail.com", nip:"AHB-006", jabatan:"Pekarya", statuspeg:"2", gaji:"6752400", npwp:"" })
       ];
       DB.mutasi = [
-        { _id:nid(), jkn:"0002123456789", nik:"7404011111940007", faskes: settings.faskes || "19031702", gigi:"", telp:"081234567807", email:"indra.setiawan@gmail.com", nip:"AHB-007", jabatan:"Pekarya", statuspeg:"2", gaji:"6752400", npwp:"", unit:"PONGKALAERO" }
+        { _id:nid(), jkn:"0002123456789", nik:"7404011111940007", faskes: settings.faskes || "12345678", gigi:"", telp:"081234567807", email:"indra.setiawan@gmail.com", nip:"AHB-007", jabatan:"Pekarya", statuspeg:"2", gaji:"6752400", npwp:"", unit:"PONGKALAERO" }
       ];
       renderSummary(); buildNav();
       toast("Data 6 pekerja baru Site Pongkalaero & mutasi Indra Setiawan (PBI -> AHB) berhasil dimuat.");
@@ -2165,7 +2252,7 @@ const TK_PETUNJUK = {"na": [["", ""], ["", ""], ["Langkah Penggunaan Sheet \"Dat
         else if(!(g("sebab") in TK_SEBAB)) errs.push("SEBAB_NA harus salah satu kode A1–A10, bukan teks bebas");
         if(g("sebab") === "A6" && !g("tglkejadian")) errs.push("TGL_KEJADIAN wajib diisi bila SEBAB_NA = A6 (Meninggal Dunia)");
         if(g("tglkejadian") && !parseDash(g("tglkejadian"))) errs.push("TGL_KEJADIAN harus tanggal valid format dd-mm-yyyy");
-        if(g("kpj") && allRows.some(r => r._id !== row._id && String(r.kpj ?? "").trim() === g("kpj"))){ errs.push("KPJ duplikat dalam satu file — ditahan untuk konfirmasi"); held = true; }
+        if(g("kpj") && allRows.some(r => r._id !== row._id && String(r.kpj ?? "").replace(/[\s-]/g,"").toLowerCase() === g("kpj").replace(/[\s-]/g,"").toLowerCase())){ errs.push("KPJ duplikat dalam satu file — ditahan untuk konfirmasi"); held = true; }
       }
       if(mk === "koreksi"){
         if(g("noid") && !/^\d{16}$/.test(digits(g("noid")))){ errs.push("NOMOR_IDENTITAS harus 16 digit bila diisi, saat ini " + digits(g("noid")).length + " digit — ditahan untuk konfirmasi"); held = true; }
@@ -2232,7 +2319,7 @@ const TK_PETUNJUK = {"na": [["", ""], ["", ""], ["Langkah Penggunaan Sheet \"Dat
         if(!g("lokasi")) errs.push("LOKASI_PEKERJAAN wajib diisi dengan kode dari sheet Lokasi Pekerjaan");
         else if(!locExists(g("lokasi"))) errs.push("LOKASI_PEKERJAAN " + g("lokasi") + " tidak ada di sheet Lokasi Pekerjaan");
         if(!g("upah")) errs.push("UPAH wajib diisi, angka lebih dari 0");
-        else if(!(Number(String(g("upah")).replace(/[^\d.-]/g,"")) > 0)) errs.push("UPAH harus angka lebih dari 0");
+        else if(!(parseMoney(g("upah")) > 0)) errs.push("UPAH harus angka lebih dari 0");
         if(g("kodepos") && !/^\d{5}$/.test(digits(g("kodepos")))) errs.push("KODE_POS harus 5 digit bila diisi");
         if(!g("alamat")) errs.push("ALAMAT wajib diisi");
         if(!g("status")) errs.push("STATUS_PEGAWAI wajib diisi (Y = PKWT, T = PKWTT)");
@@ -2463,6 +2550,7 @@ const TK_PETUNJUK = {"na": [["", ""], ["", ""], ["Langkah Penggunaan Sheet \"Dat
     $("#tkFileInput").addEventListener("change", e => {
       const file = e.target.files[0]; e.target.value = "";
       if(!file) return;
+      if(file.size > MAX_UPLOAD) return toast("File terlalu besar (maks 10 MB).");
       if(typeof XLSX === "undefined") return toast("Library Excel belum termuat — cek koneksi internet lalu muat ulang halaman.");
       const mk = currentTk, sch = TK_SCHEMAS[mk];
       const reader = new FileReader();
@@ -2873,6 +2961,7 @@ const TK_PETUNJUK = {"na": [["", ""], ["", ""], ["Langkah Penggunaan Sheet \"Dat
     }));
 
     /* ================= INIT ================= */
+    loadStoredCompanies();
     bindCompany();
     renderCompanySelect();
     updateCompanyUI();
